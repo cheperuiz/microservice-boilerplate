@@ -20,6 +20,8 @@ Migrations scripts allow you to:
 -   Create the needed tables for your model.
 -   Update all the tables that might need change after the model is change.
 
+Note that migrations are not tracked by this repository, you might want to change that behavior.
+
 ### First time
 
 -   To initialize the migrations, create the db, etc, you need to run the commands below:

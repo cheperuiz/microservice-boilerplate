@@ -1,0 +1,38 @@
+version: '2.3'
+
+services:
+    generic:
+        build:
+            context: ./services/microservice-boilerplate/docker
+            dockerfile: Dockerfile
+        scale: 1
+        environment:
+            - DEFAULT_CONFIG=${GENERIC_DEFAULT_CONFIG}
+            - GENERIC_ROOT=${GENERIC_ROOT}
+            - QUEUES=${GENERIC_QUEUES}
+            - PYTHONPATH=${GENERIC_ROOT}
+            - JUPYTER_CONFIG=${GENERIC_JUPYTER_CONFIG}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        user: 1000:1000
+        volumes:
+            - ./services/microservice-boilerplate/config:${GENERIC_CONFIG_DIR}
+            - ./services/microservice-boilerplate/src:${GENERIC_ROOT}
+            - ./services/microservice-boilerplate/notebooks:/notebooks
+            #Common code:
+            - ./library/scripts/common:${GENERIC_ROOT}/scripts/common
+            - ./library/models/interface:${GENERIC_ROOT}/models/interface
+            - ./library/app:${GENERIC_ROOT}/app
+            - ./library/events:${GENERIC_ROOT}/events
+            - ./library/utils:${GENERIC_ROOT}/utils
+        depends_on:
+            - redis_streams
+            - postgres
+        working_dir: ${GENERIC_ROOT}/scripts
+        command: ./start_all.sh
+        networks:
+            - redis_streams_network #event streaming service & celery messaging
+            - postgres_network #dbms network
+        ports:
+            - 10024:8888 #Jupyter notebook
