@@ -5,7 +5,20 @@ Your resources' & corresponding endpoints will be defined as part of this micros
 ## Resources (Endpoints)
 
 -   Make sure the container is mounting your resource file at the `APIGATEWAY_RESOURCES_DIR/<your-resource>.py` location (ie. `${APIGATEWAY_RESOURCES_DIR}/generic.py`).
--   Import your resources to `APIGATEWAY_ROOT/app/api/api_factory.py` and register your resources inside the `create_api` function.
+-   Include the configuration for your endpoints/resources in the configuration file, according to the example below:
+
+```
+apis:
+    your_api:
+        prefix: /your/api/prefix
+        generic:    # This should be the name of your module, available at `app.resources` package
+            generic_models_list:
+                resource: GenericModelsList
+                    urls: /generics
+            generic_models_details:
+                resource: GenericModelsDetails
+                urls: /generics/<string:uuids>
+```
 
 ## Celery Tasks
 
