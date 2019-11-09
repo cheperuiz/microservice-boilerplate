@@ -1,0 +1,47 @@
+version: '1.0'
+
+event_consumers:
+    new_service:
+        consumer_group:
+            name: new_service
+            streams:
+                - generic_models
+            batch_size: 1
+        consumer_module: tasks.event_handler
+        consumer_task: consume_events_forever
+        workers: 1
+
+celery:
+    broker:
+        type: redis
+        host: redis_streams
+        port: '6379'
+        user: ''
+        password: ${REDIS_PASSWORD}
+        db: '0'
+
+    results_backend:
+        type: redis
+        host: redis_streams
+        port: '6379'
+        user: ''
+        password: ${REDIS_PASSWORD}
+        db: '0'
+
+events-stream:
+    broker:
+        type: redis
+        host: redis_streams
+        port: '6379'
+        user: ''
+        password: ${REDIS_PASSWORD}
+        db: '1'
+
+database:
+    postgres:
+        type: postgresql
+        host: postgres
+        user: postgres
+        password: ${POSTGRES_PASSWORD}
+        port: '5432'
+        db: newservicedb
